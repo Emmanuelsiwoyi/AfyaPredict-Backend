@@ -24,7 +24,6 @@ app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
-const PORT = 3000;
 
 app.get("/", async (req, res) => {
   try {
