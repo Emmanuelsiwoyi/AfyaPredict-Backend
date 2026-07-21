@@ -34,4 +34,29 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Delete a doctor
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query(
+      "DELETE FROM doctors WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Doctor not found",
+      });
+    }
+
+    res.json({
+      message: "Doctor deleted successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error deleting doctor");
+  }
+});
 module.exports = router;
