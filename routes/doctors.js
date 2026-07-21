@@ -16,15 +16,15 @@ router.get("/", async (req, res) => {
 
 // Add a doctor
 router.post("/", async (req, res) => {
-  const { first_name, last_name, specialization, phone, email } = req.body;
+  const { full_name, specialization, phone, email } = req.body;
 
   try {
     const result = await db.query(
       `INSERT INTO doctors
-      (first_name, last_name, specialization, phone, email)
-      VALUES ($1, $2, $3, $4, $5)
+      (full_name, specialization, phone, email)
+      VALUES ($1, $2, $3, $4)
       RETURNING *`,
-      [first_name, last_name, specialization, phone, email]
+      [full_name, specialization, phone, email]
     );
 
     res.status(201).json(result.rows[0]);
