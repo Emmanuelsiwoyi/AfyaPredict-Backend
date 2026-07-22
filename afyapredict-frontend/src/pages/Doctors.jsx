@@ -29,26 +29,50 @@ const [editingId, setEditingId] = useState(null);
       console.error("Error fetching doctors:", error);
     }
   };
-const addDoctor = async (e) => {
+
+  const addDoctor = async (e) => {
   e.preventDefault();
 
   try {
     const token = localStorage.getItem("token");
 
-    await api.post(
-      "/doctors",
-      {
-        full_name: fullName,
-        specialization,
-        phone,
-        email,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+    if (editingId) {
+      await api.put(
+        `/doctors/${editingId}`,
+        {
+          full_name: fullName,
+          specialization,
+          phone,
+          email,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Doctor updated successfully!");
+      setEditingId(null);
+
+    } else {
+      await api.post(
+        "/doctors",
+        {
+          full_name: fullName,
+          specialization,
+          phone,
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Doctor added successfully!");
+    }
 
     setFullName("");
     setSpecialization("");
@@ -57,10 +81,9 @@ const addDoctor = async (e) => {
 
     fetchDoctors();
 
-    alert("Doctor added successfully!");
   } catch (error) {
     console.error(error);
-    alert("Failed to add doctor.");
+    alert("Operation failed.");
   }
 };
 const deleteDoctor = async (id) => {
@@ -84,6 +107,7 @@ const deleteDoctor = async (id) => {
   }
 };
  const editDoctor = (doctor) => {
+    console.log("Editing doctor:",doctor.id);
   setEditingId(doctor.id);
   setFullName(doctor.full_name);
   setSpecialization(doctor.specialization);
@@ -124,8 +148,8 @@ const deleteDoctor = async (id) => {
   />
 
   <button type="submit" className="btn btn-success">
-    Add Doctor
-  </button>
+  {editingId ? "Update Doctor" : "Add Doctor"}
+</button>
 </form>
       <table className="table table-bordered">
         <thead>
@@ -149,19 +173,20 @@ const deleteDoctor = async (id) => {
               <td>{doctor.email}</td>
             <td>
   <button
-    className="btn btn-warning btn-sm me-2"
-    onClick={() => editDoctor(doctor)}
-  >
-    Edit
-  </button>
+  type="button"
+  className="btn btn-warning btn-sm me-2"
+  onClick={() => editDoctor(doctor)}
+>
+  Edit
+</button>
 
   <button
-    className="btn btn-danger btn-sm"
-    onClick={() => deleteDoctor(doctor.id)}
-
-  >
-    Delete
-  </button>
+  type="button"
+  className="btn btn-danger btn-sm"
+  onClick={() => deleteDoctor(doctor.id)}
+>
+  Delete
+</button>
 </td>
             </tr>
           ))}
