@@ -8,6 +8,7 @@ const [fullName, setFullName] = useState("");
 const [specialization, setSpecialization] = useState("");
 const [phone, setPhone] = useState("");
 const [email, setEmail] = useState("");
+const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     fetchDoctors();
@@ -82,6 +83,13 @@ const deleteDoctor = async (id) => {
     alert("Failed to delete doctor.");
   }
 };
+ const editDoctor = (doctor) => {
+  setEditingId(doctor.id);
+  setFullName(doctor.full_name);
+  setSpecialization(doctor.specialization);
+  setPhone(doctor.phone);
+  setEmail(doctor.email);
+};
   return (
     <div className="container mt-4">
       <h2>Doctors</h2>
@@ -139,10 +147,18 @@ const deleteDoctor = async (id) => {
               <td>{doctor.specialization}</td>
               <td>{doctor.phone}</td>
               <td>{doctor.email}</td>
-              <td>
+            <td>
+  <button
+    className="btn btn-warning btn-sm me-2"
+    onClick={() => editDoctor(doctor)}
+  >
+    Edit
+  </button>
+
   <button
     className="btn btn-danger btn-sm"
     onClick={() => deleteDoctor(doctor.id)}
+
   >
     Delete
   </button>
